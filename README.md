@@ -36,7 +36,7 @@ A blazing-fast, privacy-first, and 100% offline automated expense tracker for An
 Because **spenta** requires the `BIND_NOTIFICATION_LISTENER_SERVICE` permission, special steps are required for testing.
 
 ### Building from Source
-1. Clone this repository: `git clone https://github.com/yourusername/spenta.git`
+1. Clone this repository: `git clone https://github.com/ja-abhishekh/spenta-app.git`
 2. Open the project in Android Studio (Panda 2026.1 or newer).
 3. Build and run the app on a **Physical Android Device** (Emulators often struggle with Notification Listeners).
 4. **Crucial Step:** Upon first launch, navigate through the onboarding flow and click "Enable Notification Access". This will take you to Android Settings. You *must* toggle **spenta** to "ON" for the app to function.
