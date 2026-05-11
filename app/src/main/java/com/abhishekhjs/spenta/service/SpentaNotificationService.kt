@@ -31,6 +31,7 @@ class SpentaNotificationService : NotificationListenerService() {
         const val ACTION_SAVE_MERCHANT = "com.abhishekhjs.spenta.ACTION_SAVE_MERCHANT"
         const val ACTION_CATEGORIZE = "com.abhishekhjs.spenta.ACTION_CATEGORIZE"
         const val ACTION_TEST_NOTIFICATION = "com.abhishekhjs.spenta.ACTION_TEST_NOTIFICATION"
+        const val ACTION_SPLIT_BILL = "com.abhishekhjs.spenta.ACTION_SPLIT_BILL"
     }
 
     private val serviceJob = SupervisorJob()
@@ -51,7 +52,7 @@ class SpentaNotificationService : NotificationListenerService() {
         if (sbn == null || sbn.packageName == packageName) return
 
         val extras = sbn.notification.extras
-        val title = extras.getString("android.title") ?: ""
+        val title = extras.getCharSequence("android.title")?.toString() ?: ""
         val text = extras.getCharSequence("android.text")?.toString() ?: ""
         val bigText = extras.getCharSequence("android.bigText")?.toString() ?: ""
         
@@ -127,7 +128,7 @@ class SpentaNotificationService : NotificationListenerService() {
             .build()
 
         val resultIntent = Intent(this, SpentaNotificationService::class.java).apply {
-            action = ACTION_SAVE_MERCHANT
+            setAction(ACTION_SAVE_MERCHANT)
             putExtra(EXTRA_AMOUNT, amount)
             putExtra(EXTRA_TYPE, type)
         }
@@ -139,7 +140,7 @@ class SpentaNotificationService : NotificationListenerService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
 
-        val action = NotificationCompat.Action.Builder(
+        val merchantAction = NotificationCompat.Action.Builder(
             android.R.drawable.ic_menu_edit,
             "Enter Merchant",
             resultPendingIntent
@@ -147,14 +148,36 @@ class SpentaNotificationService : NotificationListenerService() {
             .addRemoteInput(remoteInput)
             .build()
 
+        // Add Split Bill Action
+        val splitIntent = Intent(this, SpentaNotificationService::class.java).apply {
+            setAction(ACTION_SPLIT_BILL)
+            putExtra(EXTRA_AMOUNT, amount)
+            putExtra(EXTRA_TYPE, type)
+        }
+        val splitPendingIntent = PendingIntent.getService(
+            this,
+            (amount + "split_initial").hashCode(),
+            splitIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
+        
+        val splitAction = NotificationCompat.Action.Builder(
+            android.R.drawable.ic_menu_share,
+            "Split Bill",
+            splitPendingIntent
+        ).build()
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_notification_overlay)
             .setContentTitle("New Spenta: ${getCurrencySymbol()}$amount")
-            .setContentText("Tap to enter merchant name.")
+            .setContentText("Tap to enter merchant name or split bill.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(false)
             .setOngoing(true)
-            .addAction(action)
+            .addAction(merchantAction)
+            .addAction(splitAction)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText("Enter merchant name to categorize this transaction, or split it with nearby friends."))
             .build()
 
         notificationManager.notify(amount.hashCode(), notification)
@@ -165,8 +188,28 @@ class SpentaNotificationService : NotificationListenerService() {
             ACTION_SAVE_MERCHANT -> handleMerchantInput(intent)
             ACTION_CATEGORIZE -> handleCategorySelection(intent)
             ACTION_TEST_NOTIFICATION -> handleTestNotification()
+            ACTION_SPLIT_BILL -> handleSplitBill(intent)
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun handleSplitBill(intent: Intent) {
+        val amount = intent.getStringExtra(EXTRA_AMOUNT)
+        val merchant = intent.getStringExtra(EXTRA_MERCHANT)
+        
+        // Bring user to the app's split screen
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+            putExtra("navigate_to", "split_bill")
+            putExtra("amount", amount)
+            putExtra("merchant", merchant)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(launchIntent)
+        
+        // Dismiss notification using the amount hash that was used to notify
+        val originalAmount = intent.getStringExtra(EXTRA_AMOUNT)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(originalAmount?.hashCode() ?: 0)
     }
 
     private fun handleTestNotification() {
@@ -211,7 +254,28 @@ class SpentaNotificationService : NotificationListenerService() {
             .setAutoCancel(false)
             .setOngoing(true)
 
-        // Add a text input for custom category
+        // 1. Add Split Bill Action (Prioritized so it's not truncated)
+        val splitIntent = Intent(this, SpentaNotificationService::class.java).apply {
+            this.action = ACTION_SPLIT_BILL
+            putExtra(EXTRA_AMOUNT, amount)
+            putExtra(EXTRA_MERCHANT, merchant)
+            putExtra(EXTRA_TYPE, type)
+        }
+        val splitPendingIntent = PendingIntent.getService(
+            this,
+            (amount + merchant + "split").hashCode(),
+            splitIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
+        val splitAction = NotificationCompat.Action.Builder(
+            android.R.drawable.ic_menu_share,
+            "Split Bill",
+            splitPendingIntent
+        ).build()
+
+        builder.addAction(splitAction)
+
+        // 2. Add Custom Category Action
         val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY)
             .setLabel("Enter custom category")
             .build()
@@ -238,7 +302,7 @@ class SpentaNotificationService : NotificationListenerService() {
             ).addRemoteInput(remoteInput).build()
         )
 
-        // Category buttons
+        // 3. Category buttons
         val categories = listOf("Food", "Shopping", "Bills", "Health", "Entertainment")
         categories.forEach { category ->
             val intent = Intent(this, SpentaNotificationService::class.java).apply {

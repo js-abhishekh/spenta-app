@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Category
 import com.abhishekhjs.spenta.data.TransactionViewModel
 
@@ -29,7 +30,7 @@ fun CategorySettingsScreen(viewModel: TransactionViewModel, onBack: () -> Unit) 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Custom Categories") },
+                title = { Text("Custom Categories", fontFamily = Inter) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -100,14 +101,15 @@ fun CategoryItem(category: Category, onDelete: () -> Unit) {
             Text(
                 text = category.name,
                 modifier = Modifier.weight(1f),
+                fontFamily = Inter,
                 fontWeight = FontWeight.Medium
             )
             if (!category.isSystem) {
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Gray)
+                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
-                Text("System", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                Text("System", style = MaterialTheme.typography.labelSmall, fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -128,16 +130,16 @@ fun AddCategoryDialog(onDismiss: () -> Unit, onConfirm: (String, String) -> Unit
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New Category") },
+        title = { Text("New Category", fontFamily = Inter) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Category Name") },
+                    label = { Text("Category Name", fontFamily = Inter) },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Text("Choose Icon", style = MaterialTheme.typography.labelLarge)
+                Text("Choose Icon", style = MaterialTheme.typography.labelLarge, fontFamily = Inter)
                 
                 // Show icons in a grid
                 Column(
@@ -168,11 +170,11 @@ fun AddCategoryDialog(onDismiss: () -> Unit, onConfirm: (String, String) -> Unit
         },
         confirmButton = {
             Button(onClick = { if (name.isNotBlank()) onConfirm(name, selectedIcon) }) {
-                Text("Add")
+                Text("Add", fontFamily = Inter)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text("Cancel", fontFamily = Inter) }
         }
     )
 }

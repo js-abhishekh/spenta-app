@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class TransactionViewModel(
     private val repository: TransactionRepository,
-    private val preferenceManager: PreferenceManager
+    val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _initialBalance = MutableStateFlow(preferenceManager.getInitialBalance())
@@ -20,6 +20,21 @@ class TransactionViewModel(
 
     private val _currency = MutableStateFlow(preferenceManager.getCurrency())
     val currency: StateFlow<String> = _currency.asStateFlow()
+
+    private val _userName = MutableStateFlow(preferenceManager.getUserName())
+    val userName: StateFlow<String> = _userName.asStateFlow()
+
+    private val _profileImage = MutableStateFlow(preferenceManager.getProfileImage())
+    val profileImage: StateFlow<String> = _profileImage.asStateFlow()
+
+    private val _themeMode = MutableStateFlow(preferenceManager.getThemeMode())
+    val themeMode: StateFlow<String> = _themeMode.asStateFlow()
+
+    private val _budgetType = MutableStateFlow(preferenceManager.getBudgetType())
+    val budgetType: StateFlow<String> = _budgetType.asStateFlow()
+
+    private val _budgetAmount = MutableStateFlow(preferenceManager.getBudgetAmount())
+    val budgetAmount: StateFlow<Double> = _budgetAmount.asStateFlow()
 
     val allTransactions: StateFlow<List<Transaction>> = repository.allTransactions
         .stateIn(
@@ -83,6 +98,31 @@ class TransactionViewModel(
     fun setCurrency(currency: String) {
         preferenceManager.setCurrency(currency)
         _currency.value = currency
+    }
+
+    fun setUserName(name: String) {
+        preferenceManager.setUserName(name)
+        _userName.value = name
+    }
+
+    fun setProfileImage(uri: String) {
+        preferenceManager.setProfileImage(uri)
+        _profileImage.value = uri
+    }
+
+    fun setThemeMode(mode: String) {
+        preferenceManager.setThemeMode(mode)
+        _themeMode.value = mode
+    }
+
+    fun setBudgetType(type: String) {
+        preferenceManager.setBudgetType(type)
+        _budgetType.value = type
+    }
+
+    fun setBudgetAmount(amount: Double) {
+        preferenceManager.setBudgetAmount(amount)
+        _budgetAmount.value = amount
     }
 
     fun exportToCsv(transactions: List<Transaction>): String {

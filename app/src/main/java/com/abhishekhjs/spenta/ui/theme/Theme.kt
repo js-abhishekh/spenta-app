@@ -16,14 +16,26 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = OnSurfaceDark
 )
 
+private val LightColorScheme = androidx.compose.material3.lightColorScheme(
+    primary = PrimaryLight,
+    onPrimary = OnPrimaryLight,
+    secondary = SecondaryLight,
+    onSecondary = OnSecondaryLight,
+    background = BackgroundLight,
+    onBackground = OnBackgroundLight,
+    surface = SurfaceLight,
+    onSurface = OnSurfaceLight
+)
+
 @Composable
 fun SpentaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    // We default to DarkColorScheme to match the "Deep Onyx" requirement
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+
     MaterialTheme(
-        colorScheme = DarkColorScheme,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )

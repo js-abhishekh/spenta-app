@@ -1,6 +1,7 @@
 package com.abhishekhjs.spenta.ui
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -12,10 +13,12 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object Home : Screen("home", "Home", Icons.Default.Home)
     object Spendings : Screen("spendings", "Spendings", Icons.Default.History)
     object Settings : Screen("settings", "Settings", Icons.Default.Settings)
+    object SplitBill : Screen("split_bill?amount={amount}&merchant={merchant}", "Split", Icons.Default.Groups)
 }
 
 val items = listOf(
     Screen.Home,
     Screen.Spendings,
+    Screen.SplitBill,
     Screen.Settings
 )

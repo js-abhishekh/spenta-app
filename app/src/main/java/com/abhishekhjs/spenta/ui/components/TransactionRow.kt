@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Transaction
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,7 +30,8 @@ fun TransactionRow(
     modifier: Modifier = Modifier,
     isCompact: Boolean = false,
     currency: String = "$",
-    onLongClick: () -> Unit = {}
+    onLongClick: () -> Unit = {},
+    onPayClick: () -> Unit = {}
 ) {
     val isExpense = transaction.type == "Expense"
     val dateFormat = if (isCompact) {
@@ -48,8 +50,12 @@ fun TransactionRow(
     val fontSizeSub = if (isCompact) 10.sp else 12.sp
 
     Surface(
-        color = if (transaction.isAcknowledged) MaterialTheme.colorScheme.surface 
-                else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
+        color = if (transaction.isAcknowledged) {
+            if (!transaction.isPaid) MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f)
+            else MaterialTheme.colorScheme.surface
+        } else {
+            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f)
+        },
         shape = RoundedCornerShape(16.dp),
         modifier = modifier
             .fillMaxWidth()
@@ -69,15 +75,20 @@ fun TransactionRow(
                     .size(boxSize)
                     .clip(CircleShape)
                     .background(
-                        if (isExpense) MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
+                        if (!transaction.isAcknowledged) MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
+                        else if (!transaction.isPaid) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                        else if (isExpense) MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
                         else MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = icon,
+                    imageVector = if (!transaction.isAcknowledged) Icons.Default.PriorityHigh else icon,
                     contentDescription = null,
-                    tint = if (isExpense) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+                    tint = if (!transaction.isAcknowledged) MaterialTheme.colorScheme.error
+                           else if (!transaction.isPaid) MaterialTheme.colorScheme.tertiary 
+                           else if (isExpense) MaterialTheme.colorScheme.secondary 
+                           else MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(iconSize)
                 )
             }
@@ -86,27 +97,53 @@ fun TransactionRow(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (!transaction.isAcknowledged && transaction.merchant.isEmpty()) "Unacknowledged" else transaction.merchant,
+                    text = if (!transaction.isAcknowledged) "Unacknowledged" 
+                           else if (transaction.merchant.isEmpty()) "New Transaction"
+                           else transaction.merchant,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = Inter,
                     fontSize = fontSizeMain,
-                    color = if (transaction.isAcknowledged) MaterialTheme.colorScheme.onSurface 
-                            else MaterialTheme.colorScheme.error
+                    color = if (!transaction.isAcknowledged) MaterialTheme.colorScheme.error
+                            else if (!transaction.isPaid) MaterialTheme.colorScheme.onTertiaryContainer
+                            else MaterialTheme.colorScheme.onSurface 
                 )
                 Text(
-                    text = if (!transaction.isAcknowledged && transaction.category.isEmpty()) "Tap to identify" else transaction.category,
+                    text = if (!transaction.isAcknowledged) {
+                        if (transaction.merchant.isNotEmpty()) "From: ${transaction.merchant}" else "Tap to identify category"
+                    } else if (!transaction.isPaid) "Pending Payment" 
+                    else if (transaction.category.isEmpty()) "Uncategorized"
+                    else transaction.category,
                     fontSize = fontSizeSub,
-                    color = if (transaction.isAcknowledged) Color.Gray else MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                    fontFamily = Inter,
+                    color = if (!transaction.isAcknowledged) MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                            else MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
+
+            if (!transaction.isPaid && !isCompact) {
+                Button(
+                    onClick = onPayClick,
+                    modifier = Modifier.height(32.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                ) {
+                    Text("Paid", fontSize = 12.sp, fontFamily = Inter, fontWeight = FontWeight.Bold)
+                }
+                Spacer(modifier = Modifier.width(8.dp))
             }
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = "${if (isExpense) "-" else "+"}$currency${String.format(Locale.US, "%.2f", transaction.amount)}",
                     fontWeight = FontWeight.ExtraBold,
+                    fontFamily = Inter,
                     fontSize = fontSizeMain,
-                    color = if (isExpense) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
+                    color = if (!transaction.isPaid) MaterialTheme.colorScheme.tertiary
+                            else if (isExpense) MaterialTheme.colorScheme.secondary 
+                            else MaterialTheme.colorScheme.primary
                 )
-                Text(text = dateString, fontSize = fontSizeSub, color = Color.Gray)
+                Text(text = dateString, fontSize = fontSizeSub, fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

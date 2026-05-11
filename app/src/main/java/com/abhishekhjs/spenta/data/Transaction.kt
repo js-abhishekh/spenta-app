@@ -12,5 +12,6 @@ data class Transaction(
     val category: String,
     val type: String, // "Income" or "Expense"
     val timestamp: Long = System.currentTimeMillis(),
-    val isAcknowledged: Boolean = true
+    val isAcknowledged: Boolean = true,
+    val isPaid: Boolean = true
 )

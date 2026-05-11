@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.ui.theme.CyberLime
 import com.abhishekhjs.spenta.ui.theme.DeepOnyx
 import kotlinx.coroutines.delay
@@ -33,14 +34,15 @@ fun SplashScreen(onTimeout: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DeepOnyx),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "spenta",
-                color = CyberLime,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 64.sp,
+                fontFamily = Inter,
                 fontWeight = FontWeight.Black,
                 letterSpacing = (-2).sp,
                 modifier = Modifier.alpha(alphaAnim.value)
@@ -48,8 +50,9 @@ fun SplashScreen(onTimeout: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "SMART EXPENSE TRACKING",
-                color = CyberLime.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 fontSize = 12.sp,
+                fontFamily = Inter,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 4.sp,
                 modifier = Modifier.alpha(alphaAnim.value)
