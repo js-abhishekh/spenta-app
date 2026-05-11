@@ -40,7 +40,7 @@ import java.util.Locale
 @Composable
 fun HomeScreen(
     viewModel: TransactionViewModel,
-    onNavigateToSplit: () -> Unit = {},
+    onNavigateToSplit: (String?) -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
     onAddTransaction: () -> Unit = {}
 ) {
@@ -69,6 +69,10 @@ fun HomeScreen(
             onDelete = { toDelete ->
                 viewModel.delete(toDelete)
                 editingTransaction = null
+            },
+            onSplit = { toSplit ->
+                editingTransaction = null
+                onNavigateToSplit(toSplit.amount.toString())
             }
         )
     }
@@ -223,11 +227,16 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            val buttonColors = ButtonDefaults.buttonColors(
+                containerColor = if (isDark) Color(0xFF1E1E1E) else MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = if (isDark) Color.White.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
             Button(
-                onClick = { onNavigateToSplit() },
+                onClick = { onNavigateToSplit(null) },
                 modifier = Modifier.weight(1f).height(48.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                colors = buttonColors
             ) {
                 Icon(Icons.Default.Groups, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
@@ -238,7 +247,7 @@ fun HomeScreen(
                 onClick = { onNavigateToSettings() },
                 modifier = Modifier.weight(1f).height(48.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                colors = buttonColors
             ) {
                 Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
@@ -414,41 +423,45 @@ fun BalanceMiniCard(
 
 @Composable
 fun SpendingStatusCard(transactions: List<Transaction>, budgetType: String, budgetAmount: Double, currency: String) {
-    val calendar = java.util.Calendar.getInstance()
+    val now = java.util.Calendar.getInstance()
     
-    val periodStart = when (budgetType) {
-        "Weekly" -> {
-            calendar.set(java.util.Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
-            calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
-            calendar.set(java.util.Calendar.MINUTE, 0)
-            calendar.set(java.util.Calendar.SECOND, 0)
-            calendar.timeInMillis
-        }
-        else -> { // Monthly
-            calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)
-            calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
-            calendar.set(java.util.Calendar.MINUTE, 0)
-            calendar.set(java.util.Calendar.SECOND, 0)
-            calendar.timeInMillis
-        }
-    }
+    val todayStart = (now.clone() as java.util.Calendar).apply {
+        set(java.util.Calendar.HOUR_OF_DAY, 0)
+        set(java.util.Calendar.MINUTE, 0)
+        set(java.util.Calendar.SECOND, 0)
+        set(java.util.Calendar.MILLISECOND, 0)
+    }.timeInMillis
 
-    // Include acknowledged and pending expenses for "Safe to Spend"
-    val spent = transactions.filter { it.type == "Expense" && it.timestamp >= periodStart }.sumOf { it.amount }
-    val remaining = (budgetAmount - spent).coerceAtLeast(0.0)
-    
-    val daysInPeriod = if (budgetType == "Weekly") 7 else calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH)
+    val periodStart = (now.clone() as java.util.Calendar).apply {
+        if (budgetType == "Weekly") {
+            set(java.util.Calendar.DAY_OF_WEEK, firstDayOfWeek)
+        } else {
+            set(java.util.Calendar.DAY_OF_MONTH, 1)
+        }
+        set(java.util.Calendar.HOUR_OF_DAY, 0)
+        set(java.util.Calendar.MINUTE, 0)
+        set(java.util.Calendar.SECOND, 0)
+        set(java.util.Calendar.MILLISECOND, 0)
+    }.timeInMillis
+
+    val daysInPeriod = if (budgetType == "Weekly") 7 else now.getActualMaximum(java.util.Calendar.DAY_OF_MONTH)
     val currentDay = if (budgetType == "Weekly") {
-        val today = java.util.Calendar.getInstance()
-        val firstDay = today.firstDayOfWeek
-        (today.get(java.util.Calendar.DAY_OF_WEEK) - firstDay + 7) % 7 + 1
+        val firstDay = now.firstDayOfWeek
+        (now.get(java.util.Calendar.DAY_OF_WEEK) - firstDay + 7) % 7 + 1
     } else {
-        java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH)
+        now.get(java.util.Calendar.DAY_OF_MONTH)
     }
     val daysRemaining = (daysInPeriod - currentDay + 1).coerceAtLeast(1)
-    val safeToSpendToday = remaining / daysRemaining
 
-    val percentUsed = (spent / budgetAmount).coerceIn(0.0, 1.0)
+    val periodExpenses = transactions.filter { it.type == "Expense" && it.timestamp >= periodStart }
+    val spentBeforeToday = periodExpenses.filter { it.timestamp < todayStart }.sumOf { it.amount }
+    val spentToday = periodExpenses.filter { it.timestamp >= todayStart }.sumOf { it.amount }
+    
+    val totalSpent = spentBeforeToday + spentToday
+    val dailyAllowance = ((budgetAmount - spentBeforeToday) / daysRemaining).coerceAtLeast(0.0)
+    val safeToSpendToday = (dailyAllowance - spentToday).coerceAtLeast(0.0)
+
+    val percentUsed = (totalSpent / budgetAmount).coerceIn(0.0, 1.0)
     val isDark = isSystemInDarkTheme()
     val statusColor = when {
         percentUsed < 0.6 -> if (isDark) Color(0xFF4CAF50) else Color(0xFF2E7D32)
@@ -515,7 +528,7 @@ fun SpendingStatusCard(transactions: List<Transaction>, budgetType: String, budg
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Spent: $currency${String.format(Locale.US, "%,.0f", spent)}",
+                    text = "Spent: $currency${String.format(Locale.US, "%,.0f", totalSpent)}",
                     style = MaterialTheme.typography.labelSmall,
                     fontFamily = Inter,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

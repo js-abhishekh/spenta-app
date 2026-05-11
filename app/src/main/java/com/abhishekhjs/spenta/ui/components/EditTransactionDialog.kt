@@ -18,7 +18,8 @@ fun EditTransactionDialog(
     categories: List<Category>,
     onDismiss: () -> Unit,
     onConfirm: (Transaction) -> Unit,
-    onDelete: (Transaction) -> Unit
+    onDelete: (Transaction) -> Unit,
+    onSplit: (Transaction) -> Unit = {}
 ) {
     var merchant by remember { mutableStateOf(transaction.merchant) }
     var amount by remember { mutableStateOf(transaction.amount.toString()) }
@@ -110,12 +111,19 @@ fun EditTransactionDialog(
             }
         },
         dismissButton = {
-            Row {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 TextButton(onClick = { onDelete(transaction) }, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) {
                     Text("Delete", fontFamily = Inter)
                 }
-                TextButton(onClick = onDismiss) {
-                    Text("Cancel", fontFamily = Inter)
+                Row {
+                    if (!transaction.isAcknowledged) {
+                        TextButton(onClick = { onSplit(transaction) }) {
+                            Text("Split", fontFamily = Inter)
+                        }
+                    }
+                    TextButton(onClick = onDismiss) {
+                        Text("Cancel", fontFamily = Inter)
+                    }
                 }
             }
         }

@@ -92,13 +92,16 @@ class SpentaNotificationService : NotificationListenerService() {
             val incomeWords = listOf("credited", "received")
             val type = if (incomeWords.any { fullContent.contains(it) }) "Income" else "Expense"
 
+            // Try to extract merchant
+            val extractedMerchant = extractMerchant(fullContent)
+
             // Step 0: Auto-add to database as unacknowledged
             val repository = (application as SpentaApplication).repository
             serviceScope.launch {
                 repository.insert(
                     Transaction(
                         amount = amount,
-                        merchant = "",
+                        merchant = extractedMerchant,
                         category = "",
                         type = type,
                         isAcknowledged = false
@@ -106,12 +109,37 @@ class SpentaNotificationService : NotificationListenerService() {
                 )
             }
 
-            // Flow step 1: Ask for Merchant via text input
-            showMerchantPromptNotification(rawAmountString, type)
+            // Flow step 1: Ask for Merchant via text input (pre-fill label if merchant found)
+            showMerchantPromptNotification(rawAmountString, type, extractedMerchant)
         }
     }
 
-    private fun showMerchantPromptNotification(amount: String, type: String) {
+    private fun extractMerchant(text: String): String {
+        // Clean text: remove numbers that look like account endings or dates
+        val cleanText = text.replace(Regex("\\b[0-9xX]{4,16}\\b"), " ")
+        
+        val patterns = listOf(
+            Regex("(?:to|at|towards|paid to)\\s+([a-z0-9\\s]{3,25})(?:\\s|\\.|$)", RegexOption.IGNORE_CASE),
+            Regex("sent\\s+to\\s+([a-z0-9\\s]{3,25})", RegexOption.IGNORE_CASE),
+            Regex("spent\\s+(?:on|at)\\s+([a-z0-9\\s]{3,25})", RegexOption.IGNORE_CASE),
+            Regex("vpa\\s+([a-z0-9.\\-_]{3,30}@[a-z]{3,10})", RegexOption.IGNORE_CASE) // UPI VPA
+        )
+        
+        for (regex in patterns) {
+            val match = regex.find(cleanText)
+            if (match != null) {
+                val candidate = match.groupValues[1].trim()
+                val ignore = listOf("rs", "inr", "your", "my", "account", "a/c", "bank", "balance", "debited", "credited")
+                if (ignore.none { candidate.lowercase().contains(it) } && candidate.length > 2) {
+                    // Take first 2-3 words to avoid long sentences being captured
+                    return candidate.split(Regex("\\s+")).take(3).joinToString(" ")
+                }
+            }
+        }
+        return ""
+    }
+
+    private fun showMerchantPromptNotification(amount: String, type: String, merchant: String = "") {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -123,8 +151,14 @@ class SpentaNotificationService : NotificationListenerService() {
             notificationManager.createNotificationChannel(channel)
         }
 
+        val label = if (merchant.isNotEmpty()) {
+            "Confirm: $merchant?"
+        } else {
+            "Where did you ${if(type == "Income") "receive" else "spend"} ${getCurrencySymbol()}$amount?"
+        }
+
         val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY)
-            .setLabel("Where did you ${if(type == "Income") "receive" else "spend"} ${getCurrencySymbol()}$amount?")
+            .setLabel(label)
             .build()
 
         val resultIntent = Intent(this, SpentaNotificationService::class.java).apply {
@@ -142,42 +176,28 @@ class SpentaNotificationService : NotificationListenerService() {
 
         val merchantAction = NotificationCompat.Action.Builder(
             android.R.drawable.ic_menu_edit,
-            "Enter Merchant",
+            if (merchant.isNotEmpty()) "Edit Merchant" else "Enter Merchant",
             resultPendingIntent
         )
             .addRemoteInput(remoteInput)
             .build()
 
-        // Add Split Bill Action
-        val splitIntent = Intent(this, SpentaNotificationService::class.java).apply {
-            setAction(ACTION_SPLIT_BILL)
-            putExtra(EXTRA_AMOUNT, amount)
-            putExtra(EXTRA_TYPE, type)
+        val contentTitle = if (merchant.isNotEmpty()) {
+            "${getCurrencySymbol()}$amount at $merchant"
+        } else {
+            "New Spenta: ${getCurrencySymbol()}$amount"
         }
-        val splitPendingIntent = PendingIntent.getService(
-            this,
-            (amount + "split_initial").hashCode(),
-            splitIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        )
-        
-        val splitAction = NotificationCompat.Action.Builder(
-            android.R.drawable.ic_menu_share,
-            "Split Bill",
-            splitPendingIntent
-        ).build()
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_notification_overlay)
-            .setContentTitle("New Spenta: ${getCurrencySymbol()}$amount")
-            .setContentText("Tap to enter merchant name or split bill.")
+            .setContentTitle(contentTitle)
+            .setContentText("Tap to enter merchant name and categorize.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(false)
             .setOngoing(true)
             .addAction(merchantAction)
-            .addAction(splitAction)
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("Enter merchant name to categorize this transaction, or split it with nearby friends."))
+                .bigText(if (merchant.isNotEmpty()) "We detected a transaction of ${getCurrencySymbol()}$amount at $merchant. Tap to confirm or edit merchant name." else "Enter merchant name to categorize this transaction."))
             .build()
 
         notificationManager.notify(amount.hashCode(), notification)
@@ -195,13 +215,11 @@ class SpentaNotificationService : NotificationListenerService() {
 
     private fun handleSplitBill(intent: Intent) {
         val amount = intent.getStringExtra(EXTRA_AMOUNT)
-        val merchant = intent.getStringExtra(EXTRA_MERCHANT)
         
         // Bring user to the app's split screen
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
             putExtra("navigate_to", "split_bill")
             putExtra("amount", amount)
-            putExtra("merchant", merchant)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(launchIntent)
@@ -254,28 +272,7 @@ class SpentaNotificationService : NotificationListenerService() {
             .setAutoCancel(false)
             .setOngoing(true)
 
-        // 1. Add Split Bill Action (Prioritized so it's not truncated)
-        val splitIntent = Intent(this, SpentaNotificationService::class.java).apply {
-            this.action = ACTION_SPLIT_BILL
-            putExtra(EXTRA_AMOUNT, amount)
-            putExtra(EXTRA_MERCHANT, merchant)
-            putExtra(EXTRA_TYPE, type)
-        }
-        val splitPendingIntent = PendingIntent.getService(
-            this,
-            (amount + merchant + "split").hashCode(),
-            splitIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        )
-        val splitAction = NotificationCompat.Action.Builder(
-            android.R.drawable.ic_menu_share,
-            "Split Bill",
-            splitPendingIntent
-        ).build()
-
-        builder.addAction(splitAction)
-
-        // 2. Add Custom Category Action
+        // 1. Add Custom Category Action
         val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY)
             .setLabel("Enter custom category")
             .build()

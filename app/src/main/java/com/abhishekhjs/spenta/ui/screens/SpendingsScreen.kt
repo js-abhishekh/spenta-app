@@ -41,7 +41,8 @@ enum class SortOption { Recent, Highest }
 @Composable
 fun SpendingsScreen(
     viewModel: TransactionViewModel,
-    onAddTransaction: () -> Unit = {}
+    onAddTransaction: () -> Unit = {},
+    onNavigateToSplit: (String?) -> Unit = {}
 ) {
     val allTransactions by viewModel.allTransactions.collectAsState(initial = emptyList())
     val categories by viewModel.allCategories.collectAsState()
@@ -68,6 +69,10 @@ fun SpendingsScreen(
             onDelete = { toDelete ->
                 viewModel.delete(toDelete)
                 editingTransaction = null
+            },
+            onSplit = { toSplit ->
+                editingTransaction = null
+                onNavigateToSplit(toSplit.amount.toString())
             }
         )
     }

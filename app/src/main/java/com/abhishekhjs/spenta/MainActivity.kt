@@ -233,9 +233,12 @@ fun MainScreen(viewModel: TransactionViewModel, preferenceManager: com.abhishekh
                     if (navigateTo == "split_bill") {
                         val amount = intent.getStringExtra("amount") ?: ""
                         val merchant = intent.getStringExtra("merchant") ?: ""
-                        val encodedAmount = java.net.URLEncoder.encode(amount, "UTF-8")
-                        val encodedMerchant = java.net.URLEncoder.encode(merchant, "UTF-8")
-                        navController.navigate("split_bill?amount=$encodedAmount&merchant=$encodedMerchant") {
+                        
+                        // Navigate to split bill, popping splash if it's there
+                        navController.navigate("split_bill?amount=${java.net.URLEncoder.encode(amount, "UTF-8")}&merchant=${java.net.URLEncoder.encode(merchant, "UTF-8")}") {
+                            if (navController.currentDestination?.route == Screen.Splash.route) {
+                                popUpTo(Screen.Splash.route) { inclusive = true }
+                            }
                             launchSingleTop = true
                         }
                         intent.removeExtra("navigate_to")
@@ -379,9 +382,12 @@ fun MainScreen(viewModel: TransactionViewModel, preferenceManager: com.abhishekh
             ) {
                 composable(Screen.Splash.route) {
                     SplashScreen(onTimeout = {
-                        val destination = if (!preferenceManager.isSetupComplete()) Screen.Onboarding.route else Screen.Home.route
-                        navController.navigate(destination) {
-                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        // Check if we already navigated away (e.g. from an intent)
+                        if (navController.currentDestination?.route == Screen.Splash.route) {
+                            val destination = if (!preferenceManager.isSetupComplete()) Screen.Onboarding.route else Screen.Home.route
+                            navController.navigate(destination) {
+                                popUpTo(Screen.Splash.route) { inclusive = true }
+                            }
                         }
                     })
                 }
@@ -399,7 +405,10 @@ fun MainScreen(viewModel: TransactionViewModel, preferenceManager: com.abhishekh
                 composable(Screen.Home.route) { 
                     HomeScreen(
                         viewModel = viewModel,
-                        onNavigateToSplit = { navController.navigate(Screen.SplitBill.route) },
+                        onNavigateToSplit = { amount -> 
+                            val route = if (amount != null) "split_bill?amount=$amount" else Screen.SplitBill.route
+                            navController.navigate(route) 
+                        },
                         onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
                         onAddTransaction = { showAddDialog = true }
                     ) 
@@ -407,7 +416,11 @@ fun MainScreen(viewModel: TransactionViewModel, preferenceManager: com.abhishekh
                 composable(Screen.Spendings.route) { 
                     SpendingsScreen(
                         viewModel = viewModel,
-                        onAddTransaction = { showAddDialog = true }
+                        onAddTransaction = { showAddDialog = true },
+                        onNavigateToSplit = { amount ->
+                            val route = if (amount != null) "split_bill?amount=$amount" else Screen.SplitBill.route
+                            navController.navigate(route)
+                        }
                     ) 
                 }
                 composable(Screen.Settings.route) { 
