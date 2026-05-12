@@ -21,7 +21,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "spenta_database"
                 )
-                    .fallbackToDestructiveMigration(true)
                     .build()
                 INSTANCE = instance
                 instance

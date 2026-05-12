@@ -27,8 +27,10 @@ import androidx.compose.foundation.shape.CircleShape
 import coil.compose.AsyncImage
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.ui.res.stringResource
 import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Transaction
+import com.abhishekhjs.spenta.R
 import com.abhishekhjs.spenta.data.TransactionViewModel
 import com.abhishekhjs.spenta.ui.components.EditTransactionDialog
 import com.abhishekhjs.spenta.ui.components.TransactionRow
@@ -240,7 +242,7 @@ fun HomeScreen(
             ) {
                 Icon(Icons.Default.Groups, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Split Bill", fontFamily = Inter, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text(stringResource(R.string.split_bill), fontFamily = Inter, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
             
             Button(
@@ -251,7 +253,7 @@ fun HomeScreen(
             ) {
                 Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Budget", fontFamily = Inter, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text(stringResource(R.string.budget), fontFamily = Inter, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
         }
         

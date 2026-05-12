@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -359,13 +360,13 @@ fun MainScreen(viewModel: TransactionViewModel, preferenceManager: com.abhishekh
                         Spacer(modifier = Modifier.width(16.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Notification Access Required",
+                                text = stringResource(R.string.notification_access_title),
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = Inter,
                                 color = MaterialTheme.colorScheme.onErrorContainer
                             )
                             Text(
-                                text = "Tap here to enable notification detection in settings.",
+                                text = stringResource(R.string.notification_access_desc),
                                 fontSize = 12.sp,
                                 fontFamily = Inter,
                                 color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f)
@@ -491,7 +492,7 @@ fun AddTransactionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Transaction", fontFamily = Inter) },
+        title = { Text(stringResource(R.string.add_transaction), fontFamily = Inter) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(

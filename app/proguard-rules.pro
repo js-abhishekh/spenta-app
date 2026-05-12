@@ -16,6 +16,27 @@
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Remove logging in release
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
+
+# Room
+-keepclassmembers class * extends androidx.room.RoomDatabase {
+    public <init>(...);
+}
+-keep class * extends androidx.room.RoomDatabase
+-keep class com.abhishekhjs.spenta.data.* { *; }
+
+# Google Play Services Nearby
+-keep class com.google.android.gms.nearby.connection.** { *; }
+-keep interface com.google.android.gms.nearby.connection.** { *; }
+
+# Jetpack Compose
+-keep class androidx.compose.material.icons.** { *; }
+
+# Model classes
+-keep class com.abhishekhjs.spenta.data.Transaction { *; }
+-keep class com.abhishekhjs.spenta.data.Category { *; }

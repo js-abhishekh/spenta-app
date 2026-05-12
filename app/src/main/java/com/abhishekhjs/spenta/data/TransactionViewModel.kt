@@ -153,25 +153,30 @@ class TransactionViewModel(
     }
 
     fun importFromJson(json: String) = viewModelScope.launch {
-        // Basic manual parsing (assuming the format we exported)
-        // In a real app, use a proper JSON library
         try {
+            // Note: Manual parsing is still used to avoid adding new dependencies like Gson/Kotlinx.
+            // For a large-scale production app, consider using a formal JSON library.
             val transactions = mutableListOf<Transaction>()
-            val regex = Regex("""\{\s*"id":\s*(\d+),\s*"merchant":\s*"(.*?)",\s*"amount":\s*([\d.]+),\s*"category":\s*"(.*?)",\s*"type":\s*"(.*?)",\s*"timestamp":\s*(\d+)\s*\}""", RegexOption.DOT_MATCHES_ALL)
+            // Match transaction objects. We'll ignore the 'id' field as Room generates its own auto-incrementing ID.
+            val regex = Regex("""\{\s*"merchant":\s*"(.*?)",\s*"amount":\s*([\d.]+),\s*"category":\s*"(.*?)",\s*"type":\s*"(.*?)",\s*"timestamp":\s*(\d+)\s*\}""", RegexOption.DOT_MATCHES_ALL)
             val matches = regex.findAll(json)
+            
             matches.forEach { match ->
                 val groups = match.groupValues
                 transactions.add(
                     Transaction(
-                        merchant = groups[2].replace("\\\"", "\""),
-                        amount = groups[3].toDouble(),
-                        category = groups[4],
-                        type = groups[5],
-                        timestamp = groups[6].toLong()
+                        merchant = groups[1].replace("\\\"", "\""),
+                        amount = groups[2].toDouble(),
+                        category = groups[3],
+                        type = groups[4],
+                        timestamp = groups[5].toLong()
                     )
                 )
             }
-            transactions.forEach { repository.insert(it) }
+            
+            if (transactions.isNotEmpty()) {
+                transactions.forEach { repository.insert(it) }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
