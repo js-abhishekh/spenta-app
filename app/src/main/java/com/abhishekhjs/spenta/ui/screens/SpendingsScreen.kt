@@ -26,7 +26,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Transaction
 import com.abhishekhjs.spenta.data.TransactionViewModel
 import com.abhishekhjs.spenta.ui.components.EditTransactionDialog
@@ -159,7 +158,6 @@ fun SpendingsScreen(
             Text(
                 text = "Analytics",
                 style = MaterialTheme.typography.headlineMedium,
-                fontFamily = Inter,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -186,7 +184,6 @@ fun SpendingsScreen(
                 Text(
                     text = getPeriodLabel(selectedPeriod, periodInfo.first),
                     style = MaterialTheme.typography.titleMedium,
-                    fontFamily = Inter,
                     fontWeight = FontWeight.SemiBold
                 )
 
@@ -198,7 +195,6 @@ fun SpendingsScreen(
             Text(
                 text = "All Transactions",
                 style = MaterialTheme.typography.titleMedium,
-                fontFamily = Inter,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
@@ -235,7 +231,7 @@ fun SpendingsScreen(
                             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No data for this period", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("No data for this period", color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -245,7 +241,6 @@ fun SpendingsScreen(
                 Text(
                     text = "Transaction History",
                     style = MaterialTheme.typography.titleMedium,
-                    fontFamily = Inter,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -265,7 +260,6 @@ fun SpendingsScreen(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 "No transactions found",
-                                fontFamily = Inter,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -273,7 +267,7 @@ fun SpendingsScreen(
                                 onClick = onAddTransaction,
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Text("Add Transaction", fontFamily = Inter)
+                                Text("Add Transaction")
                             }
                         }
                     }
@@ -288,7 +282,6 @@ fun SpendingsScreen(
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.error,
-                            fontFamily = Inter,
                             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
                         )
                     }
@@ -306,7 +299,6 @@ fun SpendingsScreen(
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontFamily = Inter,
                             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
                         )
                     }
@@ -335,7 +327,7 @@ fun PeriodSelector(selected: TimePeriod, onSelect: (TimePeriod) -> Unit) {
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             TimePeriod.entries.forEach { period ->
                 DropdownMenuItem(
-                    text = { Text(period.name, fontFamily = Inter) },
+                    text = { Text(period.name) },
                     onClick = {
                         onSelect(period)
                         expanded = false
@@ -356,7 +348,7 @@ fun SortSelector(selected: SortOption, onSelect: (SortOption) -> Unit) {
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             SortOption.entries.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(if (option == SortOption.Recent) "Most Recent" else "Highest Amount", fontFamily = Inter) },
+                    text = { Text(if (option == SortOption.Recent) "Most Recent" else "Highest Amount") },
                     onClick = {
                         onSelect(option)
                         expanded = false
@@ -409,7 +401,6 @@ fun SpendingDonutChart(data: List<Pair<String, Double>>, currency: String, title
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                fontFamily = Inter,
                 fontWeight = FontWeight.ExtraBold,
                 color = if (isIncome) {
                     if (isDark) Color(0xFF4CAF50) else Color(0xFF2E7D32)
@@ -448,14 +439,12 @@ fun SpendingDonutChart(data: List<Pair<String, Double>>, currency: String, title
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = Inter,
                         letterSpacing = 1.sp
                     )
                     Text(
                         text = "$currency${String.format(Locale.getDefault(), "%,.0f", total)}",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Black,
-                        fontFamily = Inter,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -489,7 +478,6 @@ fun SpendingDonutChart(data: List<Pair<String, Double>>, currency: String, title
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.weight(1f),
-                            fontFamily = Inter,
                             color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -499,15 +487,13 @@ fun SpendingDonutChart(data: List<Pair<String, Double>>, currency: String, title
                                 text = "$currency${String.format(Locale.getDefault(), "%,.0f", amount)}",
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.ExtraBold,
-                                fontFamily = Inter,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 text = "$percentage%",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontFamily = Inter
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -522,8 +508,7 @@ fun SpendingDonutChart(data: List<Pair<String, Double>>, currency: String, title
                     fontWeight = FontWeight.Black,
                     letterSpacing = 1.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    fontFamily = Inter
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
         }

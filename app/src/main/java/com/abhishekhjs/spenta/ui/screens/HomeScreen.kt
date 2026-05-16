@@ -28,7 +28,6 @@ import coil.compose.AsyncImage
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.res.stringResource
-import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Transaction
 import com.abhishekhjs.spenta.R
 import com.abhishekhjs.spenta.data.TransactionViewModel
@@ -107,14 +106,12 @@ fun HomeScreen(
                 Text(
                     text = if (userName.isEmpty()) "Hello Explorer" else "Hello, $userName",
                     style = MaterialTheme.typography.headlineMedium,
-                    fontFamily = Inter,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = "Welcome back to Spenta",
                     style = MaterialTheme.typography.bodyMedium,
-                    fontFamily = Inter,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -136,7 +133,6 @@ fun HomeScreen(
                     Text(
                         text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "S",
                         color = MaterialTheme.colorScheme.primary,
-                        fontFamily = Inter,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -171,7 +167,6 @@ fun HomeScreen(
                     Text(
                         text = "NET BALANCE",
                         style = MaterialTheme.typography.labelLarge,
-                        fontFamily = Inter,
                         fontWeight = FontWeight.Black,
                         color = if (isDark) Color(0xFF4CAF50) else MaterialTheme.colorScheme.primary,
                         letterSpacing = 1.5.sp
@@ -180,7 +175,6 @@ fun HomeScreen(
                     Text(
                         text = "$currency${String.format(Locale.US, "%,.2f", currentBalance)}",
                         style = MaterialTheme.typography.displayMedium,
-                        fontFamily = Inter,
                         fontWeight = FontWeight.Bold,
                         color = if (isDark) Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -242,7 +236,7 @@ fun HomeScreen(
             ) {
                 Icon(Icons.Default.Groups, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.split_bill), fontFamily = Inter, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text(stringResource(R.string.split_bill), fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
             
             Button(
@@ -253,7 +247,7 @@ fun HomeScreen(
             ) {
                 Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.budget), fontFamily = Inter, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text(stringResource(R.string.budget), fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
         }
         
@@ -276,13 +270,11 @@ fun HomeScreen(
                     Text(
                         text = "No Budget Set",
                         style = MaterialTheme.typography.titleMedium,
-                        fontFamily = Inter,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "Set a budget to track your daily safe-to-spend limit.",
                         style = MaterialTheme.typography.bodySmall,
-                        fontFamily = Inter,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
@@ -290,7 +282,7 @@ fun HomeScreen(
                         onClick = onNavigateToSettings,
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Get Started", fontFamily = Inter)
+                        Text("Get Started")
                     }
                 }
             }
@@ -301,7 +293,6 @@ fun HomeScreen(
         Text(
             text = "Today's Activity",
             style = MaterialTheme.typography.titleLarge,
-            fontFamily = Inter,
             fontWeight = FontWeight.Bold
         )
         
@@ -319,7 +310,6 @@ fun HomeScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         "No transactions today",
-                        fontFamily = Inter,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -327,7 +317,7 @@ fun HomeScreen(
                         onClick = onAddTransaction,
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Add First Expense", fontFamily = Inter)
+                        Text("Add First Expense")
                     }
                 }
             }
@@ -405,7 +395,6 @@ fun BalanceMiniCard(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelMedium,
-                    fontFamily = Inter,
                     fontWeight = FontWeight.Black,
                     color = if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     letterSpacing = 0.8.sp
@@ -415,7 +404,6 @@ fun BalanceMiniCard(
             Text(
                 text = amount,
                 style = MaterialTheme.typography.headlineSmall,
-                fontFamily = Inter,
                 fontWeight = FontWeight.Bold,
                 color = color
             )
@@ -487,13 +475,11 @@ fun SpendingStatusCard(transactions: List<Transaction>, budgetType: String, budg
                     Text(
                         text = "Safe to Spend Today",
                         style = MaterialTheme.typography.labelMedium,
-                        fontFamily = Inter,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = "$currency${String.format(Locale.US, "%,.2f", safeToSpendToday)}",
                         style = MaterialTheme.typography.headlineSmall,
-                        fontFamily = Inter,
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -532,13 +518,11 @@ fun SpendingStatusCard(transactions: List<Transaction>, budgetType: String, budg
                 Text(
                     text = "Spent: $currency${String.format(Locale.US, "%,.0f", totalSpent)}",
                     style = MaterialTheme.typography.labelSmall,
-                    fontFamily = Inter,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = "Budget: $currency${String.format(Locale.US, "%,.0f", budgetAmount)}",
                     style = MaterialTheme.typography.labelSmall,
-                    fontFamily = Inter,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }

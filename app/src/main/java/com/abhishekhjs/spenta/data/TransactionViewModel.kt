@@ -135,41 +135,42 @@ class TransactionViewModel(
     }
 
     fun exportToJson(transactions: List<Transaction>): String {
-        // Simple manual JSON construction to avoid adding GSON/Kotlinx Serialization if not present
-        val builder = StringBuilder()
-        builder.append("[\n")
-        transactions.forEachIndexed { index, t ->
-            builder.append("  {\n")
-            builder.append("    \"id\": ${t.id},\n")
-            builder.append("    \"merchant\": \"${t.merchant.replace("\"", "\\\"")}\",\n")
-            builder.append("    \"amount\": ${t.amount},\n")
-            builder.append("    \"category\": \"${t.category}\",\n")
-            builder.append("    \"type\": \"${t.type}\",\n")
-            builder.append("    \"timestamp\": ${t.timestamp}\n")
-            builder.append("  }${if (index < transactions.size - 1) "," else ""}\n")
+        try {
+            val jsonArray = org.json.JSONArray()
+            transactions.forEach { t ->
+                val obj = org.json.JSONObject()
+                obj.put("merchant", t.merchant)
+                obj.put("amount", t.amount)
+                obj.put("category", t.category)
+                obj.put("type", t.type)
+                obj.put("timestamp", t.timestamp)
+                obj.put("isPaid", t.isPaid)
+                obj.put("isAcknowledged", t.isAcknowledged)
+                jsonArray.put(obj)
+            }
+            return jsonArray.toString(2)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return "[]"
         }
-        builder.append("]")
-        return builder.toString()
     }
 
     fun importFromJson(json: String) = viewModelScope.launch {
         try {
-            // Note: Manual parsing is still used to avoid adding new dependencies like Gson/Kotlinx.
-            // For a large-scale production app, consider using a formal JSON library.
+            val jsonArray = org.json.JSONArray(json)
             val transactions = mutableListOf<Transaction>()
-            // Match transaction objects. We'll ignore the 'id' field as Room generates its own auto-incrementing ID.
-            val regex = Regex("""\{\s*"merchant":\s*"(.*?)",\s*"amount":\s*([\d.]+),\s*"category":\s*"(.*?)",\s*"type":\s*"(.*?)",\s*"timestamp":\s*(\d+)\s*\}""", RegexOption.DOT_MATCHES_ALL)
-            val matches = regex.findAll(json)
             
-            matches.forEach { match ->
-                val groups = match.groupValues
+            for (i in 0 until jsonArray.length()) {
+                val obj = jsonArray.getJSONObject(i)
                 transactions.add(
                     Transaction(
-                        merchant = groups[1].replace("\\\"", "\""),
-                        amount = groups[2].toDouble(),
-                        category = groups[3],
-                        type = groups[4],
-                        timestamp = groups[5].toLong()
+                        merchant = obj.getString("merchant"),
+                        amount = obj.getDouble("amount"),
+                        category = obj.getString("category"),
+                        type = obj.getString("type"),
+                        timestamp = obj.getLong("timestamp"),
+                        isPaid = if (obj.has("isPaid")) obj.getBoolean("isPaid") else true,
+                        isAcknowledged = if (obj.has("isAcknowledged")) obj.getBoolean("isAcknowledged") else true
                     )
                 )
             }

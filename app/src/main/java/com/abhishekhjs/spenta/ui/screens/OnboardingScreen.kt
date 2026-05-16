@@ -37,7 +37,6 @@ import com.abhishekhjs.spenta.isNotificationServiceEnabled
 import com.abhishekhjs.spenta.service.SpentaNotificationService
 import com.abhishekhjs.spenta.ui.theme.CyberLime
 import com.abhishekhjs.spenta.ui.theme.DeepOnyx
-import com.abhishekhjs.spenta.ui.theme.Inter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -102,7 +101,7 @@ fun OnboardingScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
                 ) {
-                    Text(if (pagerState.currentPage == 6) "Get Started" else "Next", fontFamily = Inter)
+                    Text(if (pagerState.currentPage == 6) "Get Started" else "Next")
                 }
             }
         },
@@ -137,8 +136,8 @@ fun ProfileStep(viewModel: TransactionViewModel) {
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Create Profile", fontSize = 32.sp, fontFamily = Inter, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary, modifier = Modifier.align(Alignment.Start))
-        Text("Personalize your Spenta experience.", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.align(Alignment.Start))
+        Text("Create Profile", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary, modifier = Modifier.align(Alignment.Start))
+        Text("Personalize your Spenta experience.", color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.align(Alignment.Start))
         Spacer(modifier = Modifier.height(48.dp))
 
         Box(
@@ -168,7 +167,7 @@ fun ProfileStep(viewModel: TransactionViewModel) {
             onValueChange = { 
                 viewModel.setUserName(it)
             },
-            label = { Text("Your Name", fontFamily = Inter) },
+            label = { Text("Your Name") },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -187,8 +186,8 @@ fun CurrencyStep(viewModel: TransactionViewModel) {
     val currencies = listOf("₹", "$", "€", "£", "¥", "₣")
 
     Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-        Text("Select Currency", fontSize = 32.sp, fontFamily = Inter, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
-        Text("Choose your primary currency for tracking.", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Select Currency", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+        Text("Choose your primary currency for tracking.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(32.dp))
         
         currencies.forEach { currency ->
@@ -203,7 +202,7 @@ fun CurrencyStep(viewModel: TransactionViewModel) {
                 Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(selected = isSelected, onClick = null, colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary))
                     Spacer(modifier = Modifier.width(16.dp))
-                    Text(currency, fontSize = 18.sp, color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontFamily = Inter)
+                    Text(currency, fontSize = 18.sp, color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface)
                 }
             }
         }
@@ -216,8 +215,8 @@ fun BalanceStep(viewModel: TransactionViewModel) {
     var textValue by remember { mutableStateOf(if (initialBalance == 0.0) "" else initialBalance.toString()) }
 
     Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-        Text("Wallet Balance", fontSize = 32.sp, fontFamily = Inter, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
-        Text("Enter your current starting balance.", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Wallet Balance", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+        Text("Enter your current starting balance.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
@@ -226,7 +225,7 @@ fun BalanceStep(viewModel: TransactionViewModel) {
                 textValue = it
                 it.toDoubleOrNull()?.let { b -> viewModel.setInitialBalance(b) }
             },
-            label = { Text("Starting Balance", fontFamily = Inter) },
+            label = { Text("Starting Balance") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -247,18 +246,18 @@ fun BudgetStep(viewModel: TransactionViewModel) {
     var textValue by remember { mutableStateOf(if (budgetAmount == 0.0) "" else budgetAmount.toString()) }
 
     Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-        Text("Set Budget", fontSize = 32.sp, fontFamily = Inter, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
-        Text("Choose your budget period and limit.", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Set Budget", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+        Text("Choose your budget period and limit.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("Budget Type", fontWeight = FontWeight.Bold, fontFamily = Inter, color = MaterialTheme.colorScheme.onSurface)
+        Text("Budget Type", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             listOf("Weekly", "Monthly").forEach { type ->
                 val isSelected = type == budgetType
                 FilterChip(
                     selected = isSelected,
                     onClick = { viewModel.setBudgetType(type) },
-                    label = { Text(type, fontFamily = Inter) },
+                    label = { Text(type) },
                     modifier = Modifier.padding(end = 8.dp)
                 )
             }
@@ -272,7 +271,7 @@ fun BudgetStep(viewModel: TransactionViewModel) {
                 textValue = it
                 it.toDoubleOrNull()?.let { b -> viewModel.setBudgetAmount(b) }
             },
-            label = { Text("Budget Limit", fontFamily = Inter) },
+            label = { Text("Budget Limit") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -290,8 +289,8 @@ fun BudgetStep(viewModel: TransactionViewModel) {
 fun PermissionsStep() {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-        Text("Permissions", fontSize = 32.sp, fontFamily = Inter, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
-        Text("Spenta needs Notification Access to automatically detect expenses from bank SMS and alerts.", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Permissions", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+        Text("Spenta needs Notification Access to automatically detect expenses from bank SMS and alerts.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(32.dp))
 
         Card(
@@ -301,8 +300,8 @@ fun PermissionsStep() {
             Column(modifier = Modifier.padding(24.dp)) {
                 Icon(Icons.Default.NotificationsActive, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(48.dp))
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Why this is safe?", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, fontFamily = Inter)
-                Text("We only process transaction-related keywords locally on your device. No data ever leaves your phone.", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = Inter)
+                Text("Why this is safe?", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text("We only process transaction-related keywords locally on your device. No data ever leaves your phone.", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -312,7 +311,7 @@ fun PermissionsStep() {
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
         ) {
-            Text("Enable Notification Access", fontFamily = Inter)
+            Text("Enable Notification Access")
         }
     }
 }
@@ -323,8 +322,8 @@ fun CategoriesStep(viewModel: TransactionViewModel) {
     var newCategoryName by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-        Text("Categories", fontSize = 32.sp, fontFamily = Inter, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
-        Text("Manage your expense categories.", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Categories", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+        Text("Manage your expense categories.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(24.dp))
 
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -332,7 +331,7 @@ fun CategoriesStep(viewModel: TransactionViewModel) {
                 value = newCategoryName,
                 onValueChange = { newCategoryName = it },
                 modifier = Modifier.weight(1f),
-                label = { Text("Add New", fontFamily = Inter) },
+                label = { Text("Add New") },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
@@ -362,7 +361,7 @@ fun CategoriesStep(viewModel: TransactionViewModel) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(category.name, color = MaterialTheme.colorScheme.onSurface, fontFamily = Inter)
+                    Text(category.name, color = MaterialTheme.colorScheme.onSurface)
                     if (!category.isSystem) {
                         IconButton(onClick = { viewModel.deleteCategory(category) }) {
                             Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error.copy(alpha = 0.6f))
@@ -379,8 +378,8 @@ fun InteractiveDemoStep() {
     val context = LocalContext.current
     
     Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-        Text("Interactive Demo", fontSize = 32.sp, fontFamily = Inter, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
-        Text("See how Spenta works with a real system notification.", fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Interactive Demo", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+        Text("See how Spenta works with a real system notification.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(32.dp))
 
         Card(
@@ -390,8 +389,8 @@ fun InteractiveDemoStep() {
             Column(modifier = Modifier.padding(24.dp)) {
                 Icon(Icons.Default.TouchApp, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(48.dp))
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Try Real Notification", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, fontFamily = Inter)
-                Text("Click the button below to trigger a test transaction notification. You'll see how you can enter the merchant and category directly from the notification shade.", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = Inter)
+                Text("Try Real Notification", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text("Click the button below to trigger a test transaction notification. You'll see how you can enter the merchant and category directly from the notification shade.", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -407,7 +406,7 @@ fun InteractiveDemoStep() {
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
         ) {
-            Text("Send Test Notification", fontFamily = Inter)
+            Text("Send Test Notification")
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -415,8 +414,7 @@ fun InteractiveDemoStep() {
             "Note: Make sure you've enabled Notification Access in the previous step.",
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            lineHeight = 16.sp,
-            fontFamily = Inter
+            lineHeight = 16.sp
         )
     }
 }

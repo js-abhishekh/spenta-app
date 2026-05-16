@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Transaction
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -101,7 +100,6 @@ fun TransactionRow(
                            else if (transaction.merchant.isEmpty()) "New Transaction"
                            else transaction.merchant,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = Inter,
                     fontSize = fontSizeMain,
                     color = if (!transaction.isAcknowledged) MaterialTheme.colorScheme.error
                             else if (!transaction.isPaid) MaterialTheme.colorScheme.onTertiaryContainer
@@ -114,7 +112,6 @@ fun TransactionRow(
                     else if (transaction.category.isEmpty()) "Uncategorized"
                     else transaction.category,
                     fontSize = fontSizeSub,
-                    fontFamily = Inter,
                     color = if (!transaction.isAcknowledged) MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
                             else MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -128,7 +125,7 @@ fun TransactionRow(
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
                 ) {
-                    Text("Paid", fontSize = 12.sp, fontFamily = Inter, fontWeight = FontWeight.Bold)
+                    Text("Paid", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
             }
@@ -137,13 +134,12 @@ fun TransactionRow(
                 Text(
                     text = "${if (isExpense) "-" else "+"}$currency${String.format(Locale.US, "%.2f", transaction.amount)}",
                     fontWeight = FontWeight.ExtraBold,
-                    fontFamily = Inter,
                     fontSize = fontSizeMain,
                     color = if (!transaction.isPaid) MaterialTheme.colorScheme.tertiary
                             else if (isExpense) MaterialTheme.colorScheme.secondary 
                             else MaterialTheme.colorScheme.primary
                 )
-                Text(text = dateString, fontSize = fontSizeSub, fontFamily = Inter, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(text = dateString, fontSize = fontSizeSub, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

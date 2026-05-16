@@ -39,7 +39,6 @@ import com.abhishekhjs.spenta.data.TransactionViewModel
 import com.abhishekhjs.spenta.nearby.NearbyManager
 import com.abhishekhjs.spenta.ui.components.QRCodeGenerator
 import com.abhishekhjs.spenta.ui.components.QRCodeScanner
-import com.abhishekhjs.spenta.ui.theme.Inter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,14 +153,12 @@ fun SplitBillScreen(
                     text = "Split Bill",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = Inter
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "Divide with friends",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = Inter
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -194,7 +191,6 @@ fun SplitBillScreen(
                     color = if (isDark) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary,
                     fontSize = 12.sp, 
                     fontWeight = FontWeight.Black, 
-                    fontFamily = Inter,
                     letterSpacing = 1.sp
                 )
                 Spacer(modifier = Modifier.height(12.dp))
@@ -207,7 +203,6 @@ fun SplitBillScreen(
                         color = if (isDark) Color.White.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.4f),
                         fontSize = 32.sp, 
                         fontWeight = FontWeight.Bold,
-                        fontFamily = Inter,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     androidx.compose.foundation.text.BasicTextField(
@@ -224,7 +219,6 @@ fun SplitBillScreen(
                             }
                         },
                         textStyle = androidx.compose.ui.text.TextStyle(
-                            fontFamily = Inter,
                             color = if (isDark) Color.White else MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 48.sp,
                             fontWeight = FontWeight.Bold,
@@ -242,8 +236,7 @@ fun SplitBillScreen(
                                         text = "0.00",
                                         color = if (isDark) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f),
                                         fontSize = 48.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        fontFamily = Inter
+                                        fontWeight = FontWeight.Bold
                                     )
                                 }
                                 innerTextField()
@@ -260,8 +253,7 @@ fun SplitBillScreen(
                     placeholder = { 
                         Text(
                             "What's this for?", 
-                            color = if (isDark) Color.White.copy(alpha = 0.3f) else MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.3f), 
-                            fontFamily = Inter
+                            color = if (isDark) Color.White.copy(alpha = 0.3f) else MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.3f)
                         ) 
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -274,7 +266,7 @@ fun SplitBillScreen(
                         focusedTextColor = if (isDark) Color.White else MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedTextColor = if (isDark) Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                     ),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = Inter, textAlign = TextAlign.Start),
+                    textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Start),
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp)
                 )
@@ -289,14 +281,13 @@ fun SplitBillScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("NEARBY EXPLORERS", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = Inter)
+            Text("NEARBY EXPLORERS", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             if (hasPermissions) {
                 Text(
                     text = "SCANNING...",
                     color = MaterialTheme.colorScheme.primary.copy(alpha = scanningAlpha),
                     fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = Inter
+                    fontWeight = FontWeight.Bold
                 )
             } else {
                 Text(
@@ -304,7 +295,6 @@ fun SplitBillScreen(
                     color = MaterialTheme.colorScheme.error,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = Inter,
                     modifier = Modifier.clickable { launcher.launch(permissionsNeeded.toTypedArray()) }
                 )
             }
@@ -379,7 +369,6 @@ fun SplitBillScreen(
                             color = if (splitType == "Equally") MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant, 
                             fontWeight = FontWeight.Black, 
                             fontSize = 12.sp,
-                            fontFamily = Inter,
                             letterSpacing = 1.sp
                         )
                     }
@@ -402,7 +391,6 @@ fun SplitBillScreen(
                             color = if (splitType == "Exact") MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant, 
                             fontWeight = FontWeight.Black, 
                             fontSize = 12.sp,
-                            fontFamily = Inter,
                             letterSpacing = 1.sp
                         )
                     }
@@ -466,7 +454,6 @@ fun SplitBillScreen(
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = Inter,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                             textAlign = TextAlign.Center
                         )
@@ -484,7 +471,6 @@ fun SplitBillScreen(
                         "Shared with ${selectedFriends.size + 1} people", 
                         color = MaterialTheme.colorScheme.onSurfaceVariant, 
                         fontSize = 12.sp, 
-                        fontFamily = Inter,
                         fontWeight = FontWeight.Medium
                     )
                     // Avatars stack
@@ -549,7 +535,7 @@ fun SplitBillScreen(
             shape = RoundedCornerShape(20.dp),
             enabled = selectedFriends.isNotEmpty() && (totalAmount.toDoubleOrNull() ?: 0.0) > 0
         ) {
-            Text("SEND SPLIT REQUEST", fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp, fontFamily = Inter)
+            Text("SEND SPLIT REQUEST", fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
         }
 
         if (showQRDialog) {
@@ -563,17 +549,17 @@ fun SplitBillScreen(
                         modifier = Modifier.padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Your Split ID", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 18.sp, fontFamily = Inter)
+                        Text("Your Split ID", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Spacer(modifier = Modifier.height(16.dp))
                         QRCodeGenerator(content = "SPENTA_ID|${viewModel.preferenceManager.getUserName()}")
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text("Ask your friend to scan this QR", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp, fontFamily = Inter)
+                        Text("Ask your friend to scan this QR", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Button(
                             onClick = { showQRDialog = false },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
                         ) {
-                            Text("Close", fontFamily = Inter)
+                            Text("Close")
                         }
                     }
                 }
@@ -604,7 +590,7 @@ fun SplitBillScreen(
                             modifier = Modifier.fillMaxWidth().padding(16.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
                         ) {
-                            Text("Cancel", fontFamily = Inter)
+                            Text("Cancel")
                         }
                     }
                 }
@@ -629,8 +615,8 @@ fun ExplorerItem(name: String, status: String, isSelected: Boolean, isConnected:
             .clickable { onClick() }
             .padding(12.dp)
     ) {
-        Text(name, color = MaterialTheme.colorScheme.onSurface, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, fontFamily = Inter)
-        Text(status, color = if (isConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontFamily = Inter)
+        Text(name, color = MaterialTheme.colorScheme.onSurface, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+        Text(status, color = if (isConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp)
     }
 }
 
@@ -646,7 +632,7 @@ fun InviteItem(onClick: () -> Unit) {
             .clickable { onClick() }
             .padding(12.dp)
     ) {
-        Text("Invite", color = MaterialTheme.colorScheme.onSurface, fontSize = 12.sp, fontFamily = Inter)
+        Text("Invite", color = MaterialTheme.colorScheme.onSurface, fontSize = 12.sp)
     }
 }
 
@@ -672,7 +658,7 @@ fun ParticipantItem(
             contentAlignment = Alignment.Center
         ) {
             if (isMe && profileImage.isEmpty()) {
-                Text(name.take(2).uppercase(), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Black, fontFamily = Inter)
+                Text(name.take(2).uppercase(), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Black)
             } else if (profileImage.isNotEmpty()) {
                 AsyncImage(
                     model = profileImage,
@@ -688,18 +674,17 @@ fun ParticipantItem(
         Spacer(modifier = Modifier.width(16.dp))
         
         Column(modifier = Modifier.weight(1f)) {
-            Text(name, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 16.sp, fontFamily = Inter)
-            Text(subtext, color = if (isMe) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontFamily = Inter)
+            Text(name, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(subtext, color = if (isMe) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(currencySymbol, color = if (isMe) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = Inter)
+            Text(currencySymbol, color = if (isMe) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontSize = 14.sp, fontWeight = FontWeight.Bold)
             if (onAmountChange != null) {
                 androidx.compose.foundation.text.BasicTextField(
                     value = amount,
                     onValueChange = onAmountChange,
                     textStyle = androidx.compose.ui.text.TextStyle(
-                        fontFamily = Inter,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -712,7 +697,7 @@ fun ParticipantItem(
                     ),
                     decorationBox = { innerTextField ->
                         Box(contentAlignment = Alignment.CenterEnd) {
-                            if (amount.isEmpty()) Text("0.00", color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = Inter)
+                            if (amount.isEmpty()) Text("0.00", color = MaterialTheme.colorScheme.onSurfaceVariant)
                             innerTextField()
                         }
                     }
@@ -723,7 +708,6 @@ fun ParticipantItem(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = Inter,
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }

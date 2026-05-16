@@ -7,7 +7,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Category
 import com.abhishekhjs.spenta.data.Transaction
 
@@ -29,7 +28,7 @@ fun EditTransactionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (!transaction.isAcknowledged) "Identify Transaction" else "Edit Transaction", fontFamily = Inter) },
+        title = { Text(if (!transaction.isAcknowledged) "Identify Transaction" else "Edit Transaction") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
@@ -38,28 +37,28 @@ fun EditTransactionDialog(
                         onClick = { type = "Expense" },
                         shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
                     ) {
-                        Text("Expense", fontFamily = Inter)
+                        Text("Expense")
                     }
                     SegmentedButton(
                         selected = type == "Income",
                         onClick = { type = "Income" },
                         shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2)
                     ) {
-                        Text("Income", fontFamily = Inter)
+                        Text("Income")
                     }
                 }
 
                 OutlinedTextField(
                     value = merchant,
                     onValueChange = { merchant = it },
-                    label = { Text("Merchant", fontFamily = Inter) },
-                    placeholder = { Text("Enter merchant name", fontFamily = Inter) },
+                    label = { Text("Merchant") },
+                    placeholder = { Text("Enter merchant name") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = amount,
                     onValueChange = { amount = it },
-                    label = { Text("Amount", fontFamily = Inter) },
+                    label = { Text("Amount") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -72,8 +71,8 @@ fun EditTransactionDialog(
                         value = selectedCategory,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Category", fontFamily = Inter) },
-                        placeholder = { Text("Select category", fontFamily = Inter) },
+                        label = { Text("Category") },
+                        placeholder = { Text("Select category") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
                         modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true).fillMaxWidth()
                     )
@@ -83,7 +82,7 @@ fun EditTransactionDialog(
                     ) {
                         categories.forEach { category ->
                             DropdownMenuItem(
-                                text = { Text(category.name, fontFamily = Inter) },
+                                text = { Text(category.name) },
                                 onClick = {
                                     selectedCategory = category.name
                                     categoryExpanded = false
@@ -107,22 +106,22 @@ fun EditTransactionDialog(
                     ))
                 }
             ) {
-                Text("Save", fontFamily = Inter)
+                Text("Save")
             }
         },
         dismissButton = {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 TextButton(onClick = { onDelete(transaction) }, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) {
-                    Text("Delete", fontFamily = Inter)
+                    Text("Delete")
                 }
                 Row {
                     if (!transaction.isAcknowledged) {
                         TextButton(onClick = { onSplit(transaction) }) {
-                            Text("Split", fontFamily = Inter)
+                            Text("Split")
                         }
                     }
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel", fontFamily = Inter)
+                        Text("Cancel")
                     }
                 }
             }

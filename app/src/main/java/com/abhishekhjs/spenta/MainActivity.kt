@@ -44,7 +44,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.Transaction
 import com.abhishekhjs.spenta.data.TransactionViewModel
 import com.abhishekhjs.spenta.data.TransactionViewModelFactory
@@ -313,7 +312,7 @@ fun MainScreen(viewModel: TransactionViewModel, preferenceManager: com.abhishekh
                         val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
                         NavigationBarItem(
                             icon = { Icon(screen.icon, contentDescription = null) },
-                            label = { Text(screen.title, fontFamily = Inter) },
+                            label = { Text(screen.title) },
                             selected = selected,
                             onClick = {
                                 navController.navigate(screen.route) {
@@ -362,13 +361,11 @@ fun MainScreen(viewModel: TransactionViewModel, preferenceManager: com.abhishekh
                             Text(
                                 text = stringResource(R.string.notification_access_title),
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = Inter,
                                 color = MaterialTheme.colorScheme.onErrorContainer
                             )
                             Text(
                                 text = stringResource(R.string.notification_access_desc),
                                 fontSize = 12.sp,
-                                fontFamily = Inter,
                                 color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f)
                             )
                         }
@@ -492,37 +489,37 @@ fun AddTransactionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.add_transaction), fontFamily = Inter) },
+        title = { Text(stringResource(R.string.add_transaction)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = merchant,
                     onValueChange = { merchant = it },
-                    label = { Text("Merchant", fontFamily = Inter) },
+                    label = { Text("Merchant") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = amount,
                     onValueChange = { amount = it },
-                    label = { Text("Amount", fontFamily = Inter) },
+                    label = { Text("Amount") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 
-                Text("Type", style = MaterialTheme.typography.labelLarge, fontFamily = Inter)
+                Text("Type", style = MaterialTheme.typography.labelLarge)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(
                         selected = type == "Expense",
                         onClick = { type = "Expense" },
-                        label = { Text("Expense", fontFamily = Inter) }
+                        label = { Text("Expense") }
                     )
                     FilterChip(
                         selected = type == "Income",
                         onClick = { type = "Income" },
-                        label = { Text("Income", fontFamily = Inter) }
+                        label = { Text("Income") }
                     )
                 }
 
-                Text("Category", style = MaterialTheme.typography.labelLarge, fontFamily = Inter)
+                Text("Category", style = MaterialTheme.typography.labelLarge)
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -531,7 +528,7 @@ fun AddTransactionDialog(
                         FilterChip(
                             selected = category == cat.name,
                             onClick = { category = cat.name },
-                            label = { Text(cat.name, fontFamily = Inter) }
+                            label = { Text(cat.name) }
                         )
                     }
                 }
@@ -539,12 +536,12 @@ fun AddTransactionDialog(
         },
         confirmButton = {
             Button(onClick = { onConfirm(merchant, amount, category, type) }) {
-                Text("Add", fontFamily = Inter)
+                Text("Add")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", fontFamily = Inter)
+                Text("Cancel")
             }
         }
     )
