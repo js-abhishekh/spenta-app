@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.abhishekhjs.spenta.ui.theme.Inter
 import com.abhishekhjs.spenta.data.TransactionViewModel
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -103,6 +104,7 @@ fun SettingsScreen(
         Text(
             text = "Settings",
             style = MaterialTheme.typography.headlineMedium,
+            fontFamily = Inter,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
@@ -140,6 +142,7 @@ fun SettingsScreen(
                 Column(modifier = Modifier.weight(1f).clickable { showNameDialog = true }) {
                     Text(
                         text = if (userName.isEmpty()) "Add Nickname" else userName,
+                        fontFamily = Inter,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onSurface
@@ -147,6 +150,7 @@ fun SettingsScreen(
                     Text(
                         text = "Visible to nearby devices",
                         style = MaterialTheme.typography.bodySmall,
+                        fontFamily = Inter,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -238,6 +242,7 @@ fun SettingsScreen(
             text = "Spenta v1.1.0",
             modifier = Modifier.align(Alignment.CenterHorizontally),
             style = MaterialTheme.typography.bodySmall,
+            fontFamily = Inter,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
         )
         
@@ -247,8 +252,8 @@ fun SettingsScreen(
     if (showClearDialog) {
         AlertDialog(
             onDismissRequest = { showClearDialog = false },
-            title = { Text("Clear All Data") },
-            text = { Text("Are you sure you want to delete all transaction records? This action cannot be undone.") },
+            title = { Text("Clear All Data", fontFamily = Inter) },
+            text = { Text("Are you sure you want to delete all transaction records? This action cannot be undone.", fontFamily = Inter) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -257,12 +262,12 @@ fun SettingsScreen(
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Delete")
+                    Text("Delete", fontFamily = Inter)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showClearDialog = false }) {
-                    Text("Cancel")
+                    Text("Cancel", fontFamily = Inter)
                 }
             }
         )
@@ -272,12 +277,12 @@ fun SettingsScreen(
         var balanceText by remember { mutableStateOf(currentBalance.toString()) }
         AlertDialog(
             onDismissRequest = { showBalanceDialog = false },
-            title = { Text("Set Starting Balance") },
+            title = { Text("Set Starting Balance", fontFamily = Inter) },
             text = {
                 OutlinedTextField(
                     value = balanceText,
                     onValueChange = { balanceText = it },
-                    label = { Text("Balance") },
+                    label = { Text("Balance", fontFamily = Inter) },
                     modifier = Modifier.fillMaxWidth()
                 )
             },
@@ -286,12 +291,12 @@ fun SettingsScreen(
                     balanceText.toDoubleOrNull()?.let { viewModel.setInitialBalance(it) }
                     showBalanceDialog = false
                 }) {
-                    Text("Save")
+                    Text("Save", fontFamily = Inter)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showBalanceDialog = false }) {
-                    Text("Cancel")
+                    Text("Cancel", fontFamily = Inter)
                 }
             }
         )
@@ -301,7 +306,7 @@ fun SettingsScreen(
         val currencies = listOf("₹", "$", "€", "£", "¥")
         AlertDialog(
             onDismissRequest = { showCurrencyDialog = false },
-            title = { Text("Select Currency") },
+            title = { Text("Select Currency", fontFamily = Inter) },
             text = {
                 Column {
                     currencies.forEach { currency ->
@@ -320,7 +325,7 @@ fun SettingsScreen(
                                 onClick = null
                             )
                             Spacer(modifier = Modifier.width(16.dp))
-                            Text(currency)
+                            Text(currency, fontFamily = Inter)
                         }
                     }
                 }
@@ -333,12 +338,12 @@ fun SettingsScreen(
         var nameText by remember { mutableStateOf(userName) }
         AlertDialog(
             onDismissRequest = { showNameDialog = false },
-            title = { Text("Edit Nickname") },
+            title = { Text("Edit Nickname", fontFamily = Inter) },
             text = {
                 OutlinedTextField(
                     value = nameText,
                     onValueChange = { nameText = it },
-                    label = { Text("Nickname") },
+                    label = { Text("Nickname", fontFamily = Inter) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -348,12 +353,12 @@ fun SettingsScreen(
                     viewModel.setUserName(nameText)
                     showNameDialog = false
                 }) {
-                    Text("Save")
+                    Text("Save", fontFamily = Inter)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showNameDialog = false }) {
-                    Text("Cancel")
+                    Text("Cancel", fontFamily = Inter)
                 }
             }
         )
@@ -363,7 +368,7 @@ fun SettingsScreen(
         val themes = listOf("Light", "Dark", "System")
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },
-            title = { Text("Select Theme") },
+            title = { Text("Select Theme", fontFamily = Inter) },
             text = {
                 Column {
                     themes.forEach { theme ->
@@ -382,7 +387,7 @@ fun SettingsScreen(
                                 onClick = null
                             )
                             Spacer(modifier = Modifier.width(16.dp))
-                            Text(theme)
+                            Text(theme, fontFamily = Inter)
                         }
                     }
                 }
@@ -397,22 +402,22 @@ fun SettingsScreen(
         
         AlertDialog(
             onDismissRequest = { showBudgetDialog = false },
-            title = { Text("Set Budget") },
+            title = { Text("Set Budget", fontFamily = Inter) },
             text = {
                 Column {
                     OutlinedTextField(
                         value = budgetText,
                         onValueChange = { budgetText = it },
-                        label = { Text("Budget Amount") },
+                        label = { Text("Budget Amount", fontFamily = Inter) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(selected = selectedType == "Weekly", onClick = { selectedType = "Weekly" })
-                        Text("Weekly")
+                        Text("Weekly", fontFamily = Inter)
                         Spacer(modifier = Modifier.width(16.dp))
                         RadioButton(selected = selectedType == "Monthly", onClick = { selectedType = "Monthly" })
-                        Text("Monthly")
+                        Text("Monthly", fontFamily = Inter)
                     }
                 }
             },
@@ -424,12 +429,12 @@ fun SettingsScreen(
                     }
                     showBudgetDialog = false
                 }) {
-                    Text("Save")
+                    Text("Save", fontFamily = Inter)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showBudgetDialog = false }) {
-                    Text("Cancel")
+                    Text("Cancel", fontFamily = Inter)
                 }
             }
         )
@@ -442,6 +447,7 @@ fun SettingsGroup(title: String, content: @Composable ColumnScope.() -> Unit) {
         Text(
             text = title.uppercase(),
             style = MaterialTheme.typography.labelMedium,
+            fontFamily = Inter,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
@@ -509,6 +515,7 @@ fun SettingsActionItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
+                    fontFamily = Inter,
                     fontWeight = FontWeight.SemiBold,
                     color = titleColor,
                     fontSize = 15.sp
@@ -516,6 +523,7 @@ fun SettingsActionItem(
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
+                    fontFamily = Inter,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
