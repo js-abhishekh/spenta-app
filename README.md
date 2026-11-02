@@ -1,4 +1,4 @@
-# spenta 💸
+# spenta 
 
 A blazing-fast, privacy-first, and automated expense tracker for Android that works 100% offline.
 
@@ -6,19 +6,19 @@ A blazing-fast, privacy-first, and automated expense tracker for Android that wo
 
 ---
 
-## ✨ Features
+## Features
 
-*   **🤖 Automated Expense Capture:** Uses a background `NotificationListenerService` to instantly detect when you spend or receive money from any banking or payment app.
-*   **📡 Offline Bill Splitting:** Split expenses with nearby friends using **Google Nearby Connections**. No internet required—just search, connect via P2P, or scan a QR code to send split requests instantly.
-*   **📉 Safe-to-Spend Intelligence:** A dynamic budgeting engine that calculates your daily allowance. It tells you exactly how much you can spend *today* to stay within your monthly/weekly goals.
-*   **🛡️ 100% Offline & Private:** Built with a strict zero-cloud policy. Your financial data never leaves your device. No accounts, no sync, no leaks.
-*   **⚡ Frictionless Categorization:** Identify merchants and categories directly from your notification shade or via a "One-Tap Split" button in the app.
-*   **📊 Interactive Analytics:** Visualize your cash flow with beautiful donut charts and time-period filters (Weekly, Monthly, Yearly).
-*   **💾 Data Portability:** Export your entire ledger to **CSV** for Excel/Sheets or create encrypted **JSON** backups for local storage.
+*   **Automated Expense Capture:** Uses a background `NotificationListenerService` to instantly detect when you spend or receive money from any banking or payment app.
+*   **Offline Bill Splitting:** Split expenses with nearby friends using **Google Nearby Connections**. No internet required—just search, connect via P2P, or scan a QR code to send split requests instantly.
+*   **Safe-to-Spend Intelligence:** A dynamic budgeting engine that calculates your daily allowance. It tells you exactly how much you can spend *today* to stay within your monthly/weekly goals.
+*   **100% Offline & Private:** Built with a strict zero-cloud policy. Your financial data never leaves your device. No accounts, no sync, no leaks.
+*   **Frictionless Categorization:** Identify merchants and categories directly from your notification shade or via a "One-Tap Split" button in the app.
+*   **Interactive Analytics:** Visualize your cash flow with beautiful donut charts and time-period filters (Weekly, Monthly, Yearly).
+*   **Data Portability:** Export your entire ledger to **CSV** for Excel/Sheets or create encrypted **JSON** backups for local storage.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 *   **Language:** Kotlin
 *   **UI Toolkit:** Jetpack Compose (Material 3)
@@ -32,7 +32,7 @@ A blazing-fast, privacy-first, and automated expense tracker for Android that wo
 
 ---
 
-## 🚀 How It Works Under the Hood
+## How It Works Under the Hood
 
 1.  **The Listener:** An optimized background service monitors incoming alerts from banking and UPI apps.
 2.  **The Engine:** Using finely-tuned Regex, it extracts currency, exact amounts, and vendor names while ignoring OTPs and spam.
@@ -41,7 +41,7 @@ A blazing-fast, privacy-first, and automated expense tracker for Android that wo
 
 ---
 
-## 📱 Installation & Testing
+## Installation & Testing
 
 ### Prerequisites
 *   **Physical Android Device:** Android 8.0 (API 26) or higher. (Emulators do not support Nearby Connections or Notification Listening well).
@@ -60,7 +60,7 @@ If you are downloading the latest `.apk` from the Releases tab:
 
 ---
 
-## 🎨 Design System
+## Design System
 
 **spenta** features a custom brand identity designed for modern finance:
 *   **Background:** Deep Onyx (`#0A0A0A`)
@@ -69,14 +69,14 @@ If you are downloading the latest `.apk` from the Releases tab:
 
 ---
 
-## 🔒 Privacy Policy
+## Privacy Policy
 *   **Zero Data Transmission:** The app does not declare the `android.permission.INTERNET` permission. It is technically impossible for the app to send your data anywhere.
 *   **Local Processing:** All notification parsing and OCR scanning happen on-device using local APIs.
 *   **Encrypted Storage:** Data is stored in the app's private internal storage, accessible only by the OS.
 
 ---
 
-## 📄 License
+## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
